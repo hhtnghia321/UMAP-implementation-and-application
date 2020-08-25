@@ -6,7 +6,7 @@ from sklearn.manifold import SpectralEmbedding
 from tqdm import tqdm
 
 class UMAP():
-    def __init__(self, X, min_dist, n_dim, k, sym_method = 1, spec_neighbor = 50, epoch = 200, learning_rate = 1, ran_seed = None, k_tolerant = 1,Q_method = 1):
+    def __init__(self, min_dist, n_dim, k, sym_method = 1, spec_neighbor = 50, epoch = 200, learning_rate = 1, ran_seed = None, k_tolerant = 20,Q_method = 1, X = [[1],[1]]):
         self.data = X
         self.min_dist = min_dist
         self.n_dim = n_dim
@@ -109,7 +109,8 @@ class UMAP():
         fact=np.expand_dims(self.a*P*(1e-8 + np.square(euclidean_distances(Y, Y)))**(self.b-1) - Q, 2)
         return 2 * self.b * np.sum(fact * y_diff * np.expand_dims(inv_dist, 2), axis = 1)
 
-    def fit_transform(self):
+    def fit_transform(self, X):
+        self.__init__(X = X, min_dist=self.min_dist, n_dim = self.n_dim, k = self.k)
         np.random.seed(self.seed)
         Y = self.init_Y()
         P = self.sym()
